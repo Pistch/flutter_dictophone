@@ -4,17 +4,26 @@ import 'package:flutter_sound_lite/flutter_sound_player.dart';
 
 import 'package:nota_nota/utils.dart';
 import './base.dart';
+import './SoundRecordingsModel.dart';
 
 class SoundPlayerModel extends BaseModel {
   static final provider = ChangeNotifierProvider<SoundPlayerModel>(
-    create: (_) {
-      final player = SoundPlayerModel();
+    create: (context) {
+      final player = SoundPlayerModel(
+        recordingsModel: Provider.of<SoundRecordingsModel>(context, listen: false)
+      );
 
       player.init();
 
       return player;
     },
   );
+
+  SoundRecordingsModel _recordingsModel;
+
+  SoundPlayerModel({recordingsModel}) {
+    _recordingsModel = recordingsModel;
+  }
 
   final FlutterSoundPlayer _playerInstance = new FlutterSoundPlayer();
 
@@ -50,9 +59,11 @@ class SoundPlayerModel extends BaseModel {
     }
   }
 
-  void play(final String filename) async {
+  void play(final String trackId) async {
+    final filename = _recordingsModel.getRecording(trackId).path;
+
     if (isPlaying || isPaused) {
-      if (currentTrack == filename) {
+      if (currentTrack == trackId) {
         return isPaused ? resume() : pause();
       } else {
         await stop();
@@ -75,7 +86,7 @@ class SoundPlayerModel extends BaseModel {
       setState(() {
         _isPlaying = true;
         _isPaused = false;
-        _currentTrack = filename;
+        _currentTrack = trackId;
       });
     } catch (error) {
       setState(() {

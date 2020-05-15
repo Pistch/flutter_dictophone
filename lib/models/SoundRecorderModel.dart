@@ -28,10 +28,22 @@ class SoundRecorderModel extends BaseModel {
   StreamSubscription _recorderSubscription;
   StreamSubscription _dbPeakSubscription;
   String _tempDirPath;
-  bool isRecording = false;
-  bool isReady = false;
-  int recordingPosition = 0;
-  double dbLevel = 0;
+
+  bool _isRecording = false;
+  get isRecording => _isRecording;
+  set isRecording(_) {}
+
+  bool _isReady = false;
+  get isReady => _isReady;
+  set isReady(_) {}
+
+  int _recordingPosition = 0;
+  get recordingPosition => _recordingPosition;
+  set recordingPosition(_) {}
+
+  double _dbLevel = 0;
+  get dbLevel => _dbLevel;
+  set dbLevel(_) {}
 
   File get _tempFile {
     return File('$_tempDirPath/$_tempFileName');
@@ -53,7 +65,7 @@ class SoundRecorderModel extends BaseModel {
 
     setState(() {
       _tempDirPath = preparationData[0].path;
-      isReady = true;
+      _isReady = true;
     });
   }
 
@@ -70,7 +82,7 @@ class SoundRecorderModel extends BaseModel {
   }
 
   void startRecording() async {
-    if (!isReady) {
+    if (!_isReady) {
       await init();
     }
 
@@ -81,20 +93,20 @@ class SoundRecorderModel extends BaseModel {
     );
 
     setState(() {
-      isRecording = true;
+      _isRecording = true;
     });
 
     _recorderSubscription = _recorderInstance.onRecorderStateChanged.listen((e) {
       if (e != null && e.currentPosition != null) {
         setState(() {
-          recordingPosition = e.currentPosition.toInt();
+          _recordingPosition = e.currentPosition.toInt();
         });
       }
     });
 
     _dbPeakSubscription = _recorderInstance.onRecorderDbPeakChanged.listen((value) {
       setState(() {
-        dbLevel = value;
+        _dbLevel = value;
       });
     });
   }
@@ -103,9 +115,9 @@ class SoundRecorderModel extends BaseModel {
     await _recorderInstance.stopRecorder();
 
     setState(() {
-      isRecording = false;
-      dbLevel = 0;
-      recordingPosition = 0;
+      _isRecording = false;
+      _dbLevel = 0;
+      _recordingPosition = 0;
     });
     _cancelRecorderSubscriptions();
 

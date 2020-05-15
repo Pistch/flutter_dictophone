@@ -12,7 +12,12 @@ class NewRecordingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isReady = Provider.of<SoundRecorderModel>(context).isReady;
+    final recorderModel = Provider.of<SoundRecorderModel>(context);
+    final isReady = recorderModel.isReady;
+
+    if (!isReady) {
+      recorderModel.init();
+    }
 
     return DefaultAppLayout(
       header: AppBar(title: Text('New recording')),

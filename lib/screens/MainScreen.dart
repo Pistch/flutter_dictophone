@@ -3,37 +3,38 @@ import 'package:provider/provider.dart';
 
 import 'package:nota_nota/models/SoundRecordingsModel.dart';
 import 'package:nota_nota/models/SoundPlayerModel.dart';
-
-import './ItemScreen.dart';
-import './NewRecordingScreen.dart';
-
 import 'package:nota_nota/ui/TappableContainer.dart';
 import 'package:nota_nota/ui/Spinner.dart';
 import 'package:nota_nota/components/DefaultAppLayout.dart';
+import './ItemScreen.dart';
+import './NewRecordingScreen.dart';
 
 class MainScreen extends StatelessWidget {
   static const routeName = '/';
 
   Widget renderItem({
     String recordingName,
-    bool isCurrentlyPlaying,
-    SoundRecordingsModel recordings,
     SoundPlayerModel player,
     Function() onPressed
   }) {
+    final isCurrentlyPlaying = recordingName == player.currentTrack;
     final playPauseButton = Material(
       color: Colors.white,
       child: Center(
         child: Ink(
-          decoration: const ShapeDecoration(
-            color: Colors.green,
+          decoration: ShapeDecoration(
+            color: isCurrentlyPlaying ? Colors.lightGreen : Colors.green,
             shape: CircleBorder(),
           ),
           child: IconButton(
-            icon: Icon(isCurrentlyPlaying ? Icons.pause : Icons.play_arrow),
+            icon: Icon(
+              isCurrentlyPlaying && !player.isPaused
+                ? Icons.pause
+                : Icons.play_arrow
+            ),
             color: Colors.white,
             onPressed: () {
-              player.play(recordings.getRecording(recordingName).path);
+              player.play(recordingName);
             }
           ),
         ),
@@ -112,9 +113,7 @@ class MainScreen extends StatelessWidget {
     return ListView(
       children: <Widget>[
         for (String recordingName in recordings.list) renderItem(
-          isCurrentlyPlaying: recordingName == player.currentTrack,
           player: player,
-          recordings: recordings,
           recordingName: recordingName,
           onPressed: () {
             Navigator.pushNamed(

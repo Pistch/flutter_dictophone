@@ -36,11 +36,13 @@ class ItemScreen extends StatelessWidget {
             children: [
               IconButton(
                 icon: Icon(
-                  isCurrentlyPlaying ? Icons.pause : Icons.play_arrow,
+                  isCurrentlyPlaying && !player.isPaused
+                    ? Icons.pause
+                    : Icons.play_arrow,
                   size: 36
                 ),
                 onPressed: () {
-                  player.play(recordings.getRecording(args.id).path);
+                  player.play(args.id);
                 },
               )
             ],

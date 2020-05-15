@@ -65,7 +65,9 @@ class SoundRecordingsModel extends BaseModel {
           continue;
         }
 
-        newMap[getFileSelfName(file.path)] = file;
+        if (file.path.endsWith('.aac')) {
+          newMap[getFileSelfName(file.path)] = file;
+        }
       }
       
       _map = newMap;

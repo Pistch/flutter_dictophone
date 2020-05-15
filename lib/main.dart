@@ -10,20 +10,20 @@ import 'package:nota_nota/screens/ItemScreen.dart';
 import 'package:nota_nota/screens/NewRecordingScreen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(Dictophone());
 }
 
-class MyApp extends StatelessWidget {
+class Dictophone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        SoundPlayerModel.provider,
         SoundRecordingsModel.provider,
+        SoundPlayerModel.provider,
         SoundRecorderModel.provider
       ],
       child: MaterialApp(
-        title: 'NotaNota',
+        title: 'Flutter Dictophone',
         theme: ThemeData(
           primarySwatch: Colors.green,
         ),
